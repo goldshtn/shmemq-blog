@@ -1,4 +1,4 @@
-## Shared Memory Queue, Adaptive pthread_mutex, and Dynamic Tracing
+## Shared Memory Queue, Adaptive `pthread_mutex`, and Dynamic Tracing
 
 In one of my recent training classes, I was asked to demonstrate some practical uses of shared memory. My knee-jerk reply was that shared memory can be used for inter-process communication and message-passing. In fact, most IPC mechanisms are based on shared memory in their implementation. The question was whether it's worth the effort to build a message-passing interface on top of shared memory queues, or whether sockets or pipes could produce a better result in terms of performance with a minimal implementation effort. The basic requirement is that two processes pass arbitrary-sized messages to one another -- each process waits for a message before sending a reply.
 
