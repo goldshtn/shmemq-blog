@@ -1,0 +1,29 @@
+global hist
+global total
+global contended
+global syscalls
+
+// Trying to acquire
+probe process("/lib64/libpthread.so.0").statement("__pthread_mutex_lock@pthread_mutex_lock.c+64") {
+	total++
+}
+
+// Lock was not immediately available, beginning to spin
+probe process("/lib64/libpthread.so.0").statement("__pthread_mutex_lock@pthread_mutex_lock.c+66") {
+	contended++
+}
+
+probe process("/lib64/libpthread.so.0").statement("__pthread_mutex_lock@pthread_mutex_lock.c+80") {
+	numspins = $cnt
+	hist <<< numspins
+}
+
+probe process("/lib64/libpthread.so.0").statement("__pthread_mutex_lock@pthread_mutex_lock.c+73") {
+	syscalls++
+}
+
+probe end {
+	printf("total: %d contended: %d went to kernel: %d\n", total, contended, syscalls);
+	println("histogram of spin iterations:");
+	print(@hist_log(hist));
+} 
